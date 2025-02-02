@@ -1,0 +1,6 @@
+# This oapi-codegen config generated the Chi code
+package: httpport
+generate:
+  chi-server: true
+  models: false
+output: ️openapi_server.gen.go
