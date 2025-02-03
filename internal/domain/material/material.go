@@ -1,7 +1,9 @@
 package material
 
 import (
-	"encoding/json"
+	"errors"
+	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/bmstu-itstech/apollo/internal/domain/department"
@@ -9,37 +11,52 @@ import (
 )
 
 type Material struct {
-	Uuid       string                `json:"uuid"`
-	Name       string                `json:"name"`
-	Desc       string                `json:"description"`
-	Url        string                `json:"url"`
-	Author     string                `json:"author"`
-	Views      int                   `json:"views"`
+	Uuid       string
+	Name       string
+	Desc       string
+	Url        string
+	Author     string
+	Views      int
 	Department department.Department
 	Discipline discipline.Discipline
 	Created    time.Time
 }
 
-func (m Material) JSONMarshal() ([]byte, error) {
-	return json.Marshal(struct {
-		Uuid       string `json:"uuid"`
-		Name       string `json:"name"`
-		Desc       string `json:"description"`
-		Url        string `json:"url"`
-		Author     string `json:"author"`
-		Views      int    `json:"views"`
-		Department int    `json:"department_id"`
-		Discipline int    `json:"discipline_id"`
-		Created    string `json:"created_at"`
-	}{
-		Uuid:       m.Uuid,
-		Name:       m.Name,
-		Desc:       m.Desc,
-		Url:        m.Url,
-		Author:     m.Author,
-		Views:      m.Views,
-		Department: m.Department.Id,
-		Discipline: m.Discipline.Id,
-		Created:    m.Created.Format(time.RFC3339),
-	})
+var ErrBadInput = errors.New("bad input")
+
+var uuid_regex *regexp.Regexp = regexp.MustCompile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+
+func NewMaterial(uuid, name, desc, url, author string, views int,
+	dept department.Department, disc discipline.Discipline, created_at string) (Material, error) {
+	if !uuid_regex.Match([]byte(uuid)) {
+		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "uuid")
+	}
+
+	if name == "" || url == "" {
+		// TODO: we could *theoretically* validate more here
+		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "name/url")
+	}
+	if (dept == department.Department{}) || (disc == discipline.Discipline{}) {
+		// TODO: does this work?!
+		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "dept/disc")
+	}
+
+	// TODO: do we really pass time as string instead of compiling on-the-spot?
+	t, err := time.Parse(time.RFC3339, created_at)
+	if err != nil {
+		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "created_at")
+	}
+
+	m := Material{
+		Uuid:       uuid,
+		Name:       name,
+		Desc:       desc, // no validation needed
+		Url:        url,
+		Author:     author, // no validation needed
+		Views:      views,  // no validation needed
+		Department: dept,
+		Discipline: disc,
+		Created:    t,
+	}
+	return m, nil
 }
