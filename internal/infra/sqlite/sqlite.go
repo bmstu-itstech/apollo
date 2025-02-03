@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/bmstu-itstech/apollo/internal/domain/department"
-	"github.com/bmstu-itstech/apollo/internal/domain/discipline"
 	"github.com/bmstu-itstech/apollo/internal/domain/material"
 	_ "github.com/mattn/go-sqlite3" // todo: _ -> sqlite?
 )
@@ -17,21 +15,21 @@ type SQLiteStorage struct {
 	db *sql.DB
 }
 
-func (s SQLiteStorage) Department(id int) (department.Department, bool) {
+func (s SQLiteStorage) Department(id int) (material.Department, bool) {
 	row := s.db.QueryRow("select * from departments where id = $1", id)
-	department := department.Department{}
+	department := material.Department{}
 	err := row.Scan(&department.Id, &department.Name, &department.Desc)
 	return department, err == nil
 }
 
-func (s SQLiteStorage) Departments() ([]department.Department, error) {
+func (s SQLiteStorage) Departments() ([]material.Department, error) {
 	rows, err := s.db.Query("select * from departments")
 	if err != nil {
 		return nil, err
 	}
-	departments := make([]department.Department, 0)
+	departments := make([]material.Department, 0)
 	for rows.Next() {
-		department := department.Department{}
+		department := material.Department{}
 		err = rows.Scan(&department.Id, &department.Name, &department.Desc)
 		if err != nil {
 			return nil, err
@@ -41,42 +39,42 @@ func (s SQLiteStorage) Departments() ([]department.Department, error) {
 	return departments, nil
 }
 
-func (s SQLiteStorage) Discipline(id int) (discipline.Discipline, bool) {
+func (s SQLiteStorage) Discipline(id int) (material.Discipline, bool) {
 	row := s.db.QueryRow("select * from disciplines where id = $1", id)
-	discipline := discipline.Discipline{}
+	discipline := material.Discipline{}
 	err := row.Scan(&discipline.Id, &discipline.Name)
 	return discipline, err == nil
 }
 
 func scanMaterial(row *sql.Rows, s SQLiteStorage) (material.Material, error) {
-	material := material.Material{}
+	m := material.Material{}
 	var department_id int
 	var discipline_id int
 	var created_at int64
 
-	err := row.Scan(&material.Uuid, &material.Name, &material.Desc,
-		&material.Url, &material.Author, &material.Views,
+	err := row.Scan(&m.Uuid, &m.Name, &m.Desc,
+		&m.Url, &m.Author, &m.Views,
 		&department_id, &discipline_id, &created_at)
 	if err != nil {
-		return material, err
+		return m, err
 	}
 	m_department, found := s.Department(department_id)
 	if !found {
-		return material, department.ErrNotExist
+		return m, material.ErrDeptNotExist
 	}
-	material.Department = m_department
+	m.Department = m_department
 
 	m_discipline, found := s.Discipline(discipline_id)
 	if !found {
-		return material, discipline.ErrNotExist
+		return m, material.ErrDiscNotExist
 	}
-	material.Discipline = m_discipline
+	m.Discipline = m_discipline
 
-	material.Created = time.Unix(created_at, 0)
-	return material, nil
+	m.Created = time.Unix(created_at, 0)
+	return m, nil
 }
 
-func (s SQLiteStorage) Materials(discipline discipline.Discipline) ([]material.Material, error) {
+func (s SQLiteStorage) Materials(discipline material.Discipline) ([]material.Material, error) {
 	rows, err := s.db.Query("select * from materials where discipline_id = $1", discipline.Id)
 	if err != nil {
 		return nil, err

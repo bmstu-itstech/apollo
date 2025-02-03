@@ -6,16 +6,14 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/bmstu-itstech/apollo/internal/domain/department"
-	"github.com/bmstu-itstech/apollo/internal/domain/discipline"
+
 	"github.com/bmstu-itstech/apollo/internal/domain/material"
-	"github.com/bmstu-itstech/apollo/internal/domain/storage"
 	"github.com/go-chi/render"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 type Server struct {
-	store storage.Storage
+	store material.Storage
 }
 
 // handleWrite "handles" error in output of ResponseWriter.Write.
@@ -123,12 +121,12 @@ func (s Server) PutMaterial(w http.ResponseWriter, r *http.Request, uuid openapi
 	// TODO: Validate here?
 	dept, found := s.store.Department(put_material.DepartamentId)
 	if !found {
-		http.Error(w, department.ErrNotExist.Error(), http.StatusBadRequest)
+		http.Error(w, material.ErrDeptNotExist.Error(), http.StatusBadRequest)
 		return
 	}
 	disc, found := s.store.Discipline(put_material.DisciplineId)
 	if !found {
-		http.Error(w, discipline.ErrNotExist.Error(), http.StatusBadRequest)
+		http.Error(w, material.ErrDiscNotExist.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -148,3 +146,28 @@ func (s Server) PutMaterial(w http.ResponseWriter, r *http.Request, uuid openapi
 	}
 	handleWrite(w.Write([]byte("OK")))
 }
+
+
+// func (m Material) JSONMarshal() ([]byte, error) {
+// 	return json.Marshal(struct {
+// 		Uuid       string `json:"uuid"`
+// 		Name       string `json:"name"`
+// 		Desc       string `json:"description"`
+// 		Url        string `json:"url"`
+// 		Author     string `json:"author"`
+// 		Views      int    `json:"views"`
+// 		Department int    `json:"department_id"`
+// 		Discipline int    `json:"discipline_id"`
+// 		Created    string `json:"created_at"`
+// 	}{
+// 		Uuid:       m.Uuid,
+// 		Name:       m.Name,
+// 		Desc:       m.Desc,
+// 		Url:        m.Url,
+// 		Author:     m.Author,
+// 		Views:      m.Views,
+// 		Department: m.Department.Id,
+// 		Discipline: m.Discipline.Id,
+// 		Created:    m.Created.Format(time.RFC3339),
+// 	})
+// }

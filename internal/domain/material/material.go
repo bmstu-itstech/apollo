@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"regexp"
 	"time"
-
-	"github.com/bmstu-itstech/apollo/internal/domain/department"
-	"github.com/bmstu-itstech/apollo/internal/domain/discipline"
 )
 
 type Material struct {
@@ -17,8 +14,8 @@ type Material struct {
 	Url        string
 	Author     string
 	Views      int
-	Department department.Department
-	Discipline discipline.Discipline
+	Department Department
+	Discipline Discipline
 	Created    time.Time
 }
 
@@ -27,7 +24,7 @@ var ErrBadInput = errors.New("bad input")
 var uuid_regex *regexp.Regexp = regexp.MustCompile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 
 func NewMaterial(uuid, name, desc, url, author string, views int,
-	dept department.Department, disc discipline.Discipline, created_at string) (Material, error) {
+	dept Department, disc Discipline, created_at string) (Material, error) {
 	if !uuid_regex.Match([]byte(uuid)) {
 		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "uuid")
 	}
@@ -36,7 +33,7 @@ func NewMaterial(uuid, name, desc, url, author string, views int,
 		// TODO: we could *theoretically* validate more here
 		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "name/url")
 	}
-	if (dept == department.Department{}) || (disc == discipline.Discipline{}) {
+	if (dept == Department{}) || (disc == Discipline{}) {
 		// TODO: does this work?!
 		return Material{}, fmt.Errorf("%w (%s)", ErrBadInput, "dept/disc")
 	}

@@ -1,4 +1,4 @@
-package discipline
+package material
 
 import "errors"
 
@@ -7,4 +7,4 @@ type Discipline struct {
 	Name string // e.g. "Основы Информатики"
 }
 
-var ErrNotExist = errors.New("discipline doesn't exist")
+var ErrDiscNotExist = errors.New("discipline doesn't exist")

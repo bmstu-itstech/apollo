@@ -1,4 +1,4 @@
-package department
+package material
 
 import (
 	"encoding/json"
@@ -22,8 +22,8 @@ type StructureNode struct {
 	Type         string          `json:"nodeType"`
 }
 
-// Build iterates over lks.bmstu.ru's "structure" api and finds all nodes of type "department"
-func Build() ([]Department, error) {
+// BuildDepartments iterates over lks.bmstu.ru's "structure" api and finds all relevant nodes
+func BuildDepartments() ([]Department, error) {
 	response, err := http.Get("https://lks.bmstu.ru/lks-back/api/v1/structure")
 	if err != nil {
 		return nil, err

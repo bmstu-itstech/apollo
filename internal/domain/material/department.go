@@ -1,4 +1,4 @@
-package department
+package material
 
 import "errors"
 
@@ -8,4 +8,5 @@ type Department struct {
 	Desc string // e.g. "Теоретическая информатика и компьютерные технологии"
 }
 
-var ErrNotExist = errors.New("department doesn't exist")
+// TODO: unify this and ErrDiscNotExist?
+var ErrDeptNotExist = errors.New("department doesn't exist")
