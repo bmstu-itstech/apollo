@@ -130,44 +130,20 @@ func (s Server) PutMaterial(w http.ResponseWriter, r *http.Request, uuid openapi
 		return
 	}
 
-	err := s.store.Upsert(uuid.String(), material.Material{
-		Uuid:       uuid.String(),
-		Name:       put_material.Name,
-		Desc:       *put_material.Description,
-		Url:        put_material.Url,
-		Author:     *put_material.Author,
-		Views:      0, // FIXME: Not part of PutMaterial?
-		Department: dept,
-		Discipline: disc,
-		Created:    time.Now(), // FIXME: Same as views?
-	})
+	// FIXME: Where do we get views and created_at?
+	//		  should we allow optional RFC3339 formatted time and views?
+	//		  and should storage implementation default to its time?
+	m, err := material.NewMaterial(
+		put_material.Uuid.String(), put_material.Name, *put_material.Description, put_material.Url, *put_material.Author, 0, dept, disc, time.Now())
+	if err != nil {
+		// NOTE: What are the chances this error is actually an Internal?
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err = s.store.Upsert(uuid.String(), m)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 	handleWrite(w.Write([]byte("OK")))
 }
-
-
-// func (m Material) JSONMarshal() ([]byte, error) {
-// 	return json.Marshal(struct {
-// 		Uuid       string `json:"uuid"`
-// 		Name       string `json:"name"`
-// 		Desc       string `json:"description"`
-// 		Url        string `json:"url"`
-// 		Author     string `json:"author"`
-// 		Views      int    `json:"views"`
-// 		Department int    `json:"department_id"`
-// 		Discipline int    `json:"discipline_id"`
-// 		Created    string `json:"created_at"`
-// 	}{
-// 		Uuid:       m.Uuid,
-// 		Name:       m.Name,
-// 		Desc:       m.Desc,
-// 		Url:        m.Url,
-// 		Author:     m.Author,
-// 		Views:      m.Views,
-// 		Department: m.Department.Id,
-// 		Discipline: m.Discipline.Id,
-// 		Created:    m.Created.Format(time.RFC3339),
-// 	})
-// }
