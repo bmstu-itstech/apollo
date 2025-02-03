@@ -1,0 +1,5 @@
+# This oapi-codegen config generates the types
+package: httpport
+generate:
+  models: true
+output: ️openapi_types.gen.go
