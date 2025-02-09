@@ -2,7 +2,7 @@ package material
 
 import "errors"
 
-// Storage contains all application data and provides methods for interacting with it
+// Storage is a generic interface for interaction with application data
 type Storage interface {
 	Materials(discipline Discipline) ([]Material, error)
 	Material(uuid string) (Material, error)
@@ -13,6 +13,6 @@ type Storage interface {
 	Department(id int) (Department, error)
 }
 
-// TODO: unify these errors?
+var ErrMatNotExist = errors.New("material doesn't exist")
 var ErrDeptNotExist = errors.New("department doesn't exist")
 var ErrDiscNotExist = errors.New("discipline doesn't exist")
