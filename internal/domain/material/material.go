@@ -7,7 +7,7 @@ import (
 )
 
 type Material struct {
-	Uuid         string
+	UUID         string
 	Name         string
 	Desc         string
 	Url          string
@@ -39,7 +39,7 @@ func UnmarshalMaterial(uuid, name, description, url string, author *string,
 	}
 
 	return Material{
-		Uuid:         uuid,
+		UUID:         uuid,
 		Name:         name,
 		Desc:         description,
 		Url:          url,
