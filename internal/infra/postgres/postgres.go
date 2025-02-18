@@ -54,6 +54,7 @@ func (s PgStorage) Material(uuid string) (material.Material, error) {
 }
 
 func (s PgStorage) Upsert(uuid string, material material.Material) error {
+	// note how on conflict, we don't touch views and created_at
 	_, err := s.conn.Exec(context.Background(), `
 	insert into materials
 		(uuid, name, description, url,
@@ -66,10 +67,8 @@ func (s PgStorage) Upsert(uuid string, material material.Material) error {
         description = EXCLUDED.description,
         url = EXCLUDED.url,
         author = EXCLUDED.author,
-        views = EXCLUDED.views,
         department_id = EXCLUDED.department_id,
         discipline_id = EXCLUDED.discipline_id,
-        created_at = EXCLUDED.created_at,
     `,
 		material.UUID, material.Name, material.Desc, material.Url,
 		material.Author, material.Views, material.DepartmentId,

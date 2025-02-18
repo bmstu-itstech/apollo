@@ -39,6 +39,11 @@ func (s *MockStorage) Material(uuid string) (material.Material, error) {
 }
 
 func (s *MockStorage) Upsert(uuid string, material material.Material) error {
+	m, ok := s.materials[uuid]
+	if ok {
+		material.Views = m.Views
+		material.Created = m.Created
+	}
 	s.materials[uuid] = material
 	return nil
 }

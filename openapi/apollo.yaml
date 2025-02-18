@@ -379,10 +379,6 @@ components:
           type: string
           description: "Telegram is the username of the author if is not anonymous"
           example: "@username"
-        views:
-          type: integer
-          description: "Number of GET requests for the material"
-          example: 1234
         department_id:
           type: integer
           description:
@@ -393,11 +389,6 @@ components:
           type: integer
           description: "ID of the discipline the material belongs to"
           example: 123
-        created_at:
-          type: string
-          format: date-time
-          description: "Time and date of creation of the material"
-          example: "2024-10-19T14:50:04Z"
       required:
         - uuid
         - name
