@@ -17,7 +17,7 @@ import (
 type ServerInterface interface {
 
 	// (GET /departments)
-	GetDepartaments(w http.ResponseWriter, r *http.Request)
+	GetDepartments(w http.ResponseWriter, r *http.Request)
 
 	// (GET /departments/{id})
 	GetDepartment(w http.ResponseWriter, r *http.Request, id int)
@@ -43,7 +43,7 @@ type ServerInterface interface {
 type Unimplemented struct{}
 
 // (GET /departments)
-func (_ Unimplemented) GetDepartaments(w http.ResponseWriter, r *http.Request) {
+func (_ Unimplemented) GetDepartments(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -86,8 +86,8 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(http.Handler) http.Handler
 
-// GetDepartaments operation middleware
-func (siw *ServerInterfaceWrapper) GetDepartaments(w http.ResponseWriter, r *http.Request) {
+// GetDepartments operation middleware
+func (siw *ServerInterfaceWrapper) GetDepartments(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 
@@ -96,7 +96,7 @@ func (siw *ServerInterfaceWrapper) GetDepartaments(w http.ResponseWriter, r *htt
 	r = r.WithContext(ctx)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetDepartaments(w, r)
+		siw.Handler.GetDepartments(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -397,7 +397,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/departments", wrapper.GetDepartaments)
+		r.Get(options.BaseURL+"/departments", wrapper.GetDepartments)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/departments/{id}", wrapper.GetDepartment)

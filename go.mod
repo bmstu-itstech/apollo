@@ -3,6 +3,7 @@ module github.com/bmstu-itstech/apollo
 go 1.23.2
 
 require (
+	github.com/ajg/form v1.5.1 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20220510233725-9ba8df137936 // indirect
 	github.com/getkin/kin-openapi v0.127.0 // indirect
@@ -34,6 +35,7 @@ require (
 
 require (
 	github.com/fatih/color v1.18.0
+	github.com/go-chi/render v1.0.3
 	github.com/jackc/pgx/v5 v5.7.2
 	golang.org/x/text v0.21.0 // indirect
 )

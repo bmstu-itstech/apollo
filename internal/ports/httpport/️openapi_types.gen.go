@@ -31,10 +31,10 @@ type Departments = []Department
 // Discipline Description of the discipline taught in the BMSTU
 type Discipline struct {
 	// Id Unique discipline number
-	Id *int `json:"id,omitempty"`
+	Id int `json:"id"`
 
 	// Name Full name of the discipline
-	Name *string `json:"name,omitempty"`
+	Name string `json:"name"`
 }
 
 // Disciplines defines model for Disciplines.
@@ -83,6 +83,9 @@ type PutMaterial struct {
 	// Author Telegram is the username of the author if is not anonymous
 	Author *string `json:"author,omitempty"`
 
+	// CreatedAt Time and date of creation of the material
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+
 	// DepartmentId ID of the department that teaches the discipline the material belongs to. The same discipline can be taught in different departments
 	DepartmentId int `json:"department_id"`
 
@@ -100,6 +103,9 @@ type PutMaterial struct {
 
 	// Uuid Uniquely identify material
 	Uuid openapi_types.UUID `json:"uuid"`
+
+	// Views Number of GET requests for the material
+	Views *int `json:"views,omitempty"`
 }
 
 // GetMaterialsParams defines parameters for GetMaterials.
