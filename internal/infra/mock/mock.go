@@ -20,10 +20,10 @@ func NewMockStorage() *MockStorage {
 	}
 }
 
-func (s *MockStorage) Materials(discipline_id int) ([]material.Material, error) {
+func (s *MockStorage) Materials(disciplineId int) ([]material.Material, error) {
 	materials := make([]material.Material, 0, len(s.materials))
 	for _, m := range s.materials {
-		if m.DisciplineId == discipline_id {
+		if m.DisciplineId == disciplineId {
 			materials = append(materials, m)
 		}
 	}

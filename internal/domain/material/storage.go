@@ -4,7 +4,7 @@ import "errors"
 
 // Storage is a generic interface for interaction with application data
 type Storage interface {
-	Materials(discipline_id int) ([]Material, error)
+	Materials(disciplineId int) ([]Material, error)
 	Material(uuid string) (Material, error)
 	Upsert(uuid string, material Material) error
 	Disciplines() ([]Discipline, error)
