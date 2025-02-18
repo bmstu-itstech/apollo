@@ -12,18 +12,18 @@ type MockStorage struct {
 	disciplines map[int]material.Discipline
 }
 
-func NewMockStorage() MockStorage {
-	return MockStorage{
+func NewMockStorage() *MockStorage {
+	return &MockStorage{
 		make(map[string]material.Material),
 		make(map[int]material.Department),
 		make(map[int]material.Discipline),
 	}
 }
 
-func (s *MockStorage) Materials(discipline material.Discipline) ([]material.Material, error) {
+func (s *MockStorage) Materials(discipline_id int) ([]material.Material, error) {
 	materials := make([]material.Material, 0, len(s.materials))
 	for _, m := range s.materials {
-		if m.DisciplineId == discipline.Id {
+		if m.DisciplineId == discipline_id {
 			materials = append(materials, m)
 		}
 	}

@@ -17,8 +17,8 @@ func NewPgStorage(conn *pgx.Conn) PgStorage {
 	return PgStorage{conn: conn}
 }
 
-func (s *PgStorage) Materials(discipline material.Discipline) ([]material.Material, error) {
-	rows, err := s.conn.Query(context.Background(), "select * from materials where discipline_id = $1", discipline.Id)
+func (s PgStorage) Materials(discipline_id int) ([]material.Material, error) {
+	rows, err := s.conn.Query(context.Background(), "select * from materials where discipline_id = $1", discipline_id)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return []material.Material{}, nil // no relevant materials exist
 	} else if err != nil {
@@ -39,7 +39,7 @@ func (s *PgStorage) Materials(discipline material.Discipline) ([]material.Materi
 	return mats, nil
 }
 
-func (s *PgStorage) Material(uuid string) (material.Material, error) {
+func (s PgStorage) Material(uuid string) (material.Material, error) {
 	rows, err := s.conn.Query(context.Background(), "select * from materials where uuid = $1", uuid)
 	if errors.Is(err, pgx.ErrNoRows) {
 		return material.Material{}, material.ErrMatNotExist
@@ -53,7 +53,7 @@ func (s *PgStorage) Material(uuid string) (material.Material, error) {
 	return mat.mapFrom()
 }
 
-func (s *PgStorage) Upsert(uuid string, material material.Material) error {
+func (s PgStorage) Upsert(uuid string, material material.Material) error {
 	_, err := s.conn.Exec(context.Background(), `
 	insert into materials
 		(uuid, name, description, url,
