@@ -1,15 +1,15 @@
-create table departments (
+create table if not exists departments (
     id integer primary key,
     name text not null,
     description text not null
-)
+);
 
-create table disciplines (
+create table if not exists disciplines (
     id integer primary key,
     name text not null
-)
+);
 
-create table materials (
+create table if not exists materials (
     uuid text primary key,
     name text not null,
     description text not null,
@@ -19,4 +19,4 @@ create table materials (
     department_id integer references departments(id),
     discipline_id integer references disciplines(id),
     created_at timestamp not null,
-)
+);
