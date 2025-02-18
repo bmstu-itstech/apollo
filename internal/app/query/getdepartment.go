@@ -32,9 +32,9 @@ func NewGetDepartmentHandler(
 }
 
 func (h getDepartmentHandler) Handle(ctx context.Context, query GetDepartment) (Department, error) {
-	m, err := h.storage.Department(query.DepartmentId)
+	d, err := h.storage.Department(query.DepartmentId)
 	if err != nil {
 		return Department{}, err
 	}
-	return departmentFromDomain(m), nil
+	return departmentFromDomain(d), nil
 }

@@ -31,13 +31,9 @@ func NewGetDepartmentsHandler(
 }
 
 func (h getDepartmentsHandler) Handle(ctx context.Context, query GetDepartments) ([]Department, error) {
-	mat, err := h.storage.Departments()
+	deps, err := h.storage.Departments()
 	if err != nil {
 		return nil, err
 	}
-	mats_fd := make([]Department, 0)
-	for _, m := range mat {
-		mats_fd = append(mats_fd, departmentFromDomain(m))
-	}
-	return mats_fd, nil
+	return departmentsFromDomain(deps), nil
 }

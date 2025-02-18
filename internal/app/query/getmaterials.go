@@ -32,13 +32,9 @@ func NewGetMaterialsHandler(
 }
 
 func (h getMaterialsHandler) Handle(ctx context.Context, query GetMaterials) ([]Material, error) {
-	mat, err := h.storage.Materials(query.DisciplineId)
+	mats, err := h.storage.Materials(query.DisciplineId)
 	if err != nil {
 		return nil, err
 	}
-	mats_fd := make([]Material, 0)
-	for _, m := range mat {
-		mats_fd = append(mats_fd, materialFromDomain(m))
-	}
-	return mats_fd, nil
+	return materialsFromDomain(mats), nil
 }

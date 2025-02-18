@@ -32,6 +32,14 @@ func materialFromDomain(m material.Material) Material {
 	}
 }
 
+func materialsFromDomain(mats []material.Material) []Material {
+	matsFromDomain := make([]Material, 0)
+	for _, m := range mats {
+		matsFromDomain = append(matsFromDomain, materialFromDomain(m))
+	}
+	return matsFromDomain
+}
+
 type Department struct {
 	Id   int
 	Name string
@@ -46,6 +54,14 @@ func departmentFromDomain(d material.Department) Department {
 	}
 }
 
+func departmentsFromDomain(deps []material.Department) []Department {
+	depsFromDomain := make([]Department, 0)
+	for _, d := range deps {
+		depsFromDomain = append(depsFromDomain, departmentFromDomain(d))
+	}
+	return depsFromDomain
+}
+
 type Discipline struct {
 	Id   int
 	Name string
@@ -56,4 +72,12 @@ func disciplineFromDomain(d material.Discipline) Discipline {
 		Id:   d.Id,
 		Name: d.Name,
 	}
+}
+
+func disciplinesFromDomain(discs []material.Discipline) []Discipline {
+	discsFromDomain := make([]Discipline, 0)
+	for _, d := range discs {
+		discsFromDomain = append(discsFromDomain, disciplineFromDomain(d))
+	}
+	return discsFromDomain
 }

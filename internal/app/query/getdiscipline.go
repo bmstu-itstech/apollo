@@ -32,9 +32,9 @@ func NewGetDisciplineHandler(
 }
 
 func (h getDisciplineHandler) Handle(ctx context.Context, query GetDiscipline) (Discipline, error) {
-	m, err := h.storage.Discipline(query.DisciplineId)
+	d, err := h.storage.Discipline(query.DisciplineId)
 	if err != nil {
 		return Discipline{}, err
 	}
-	return disciplineFromDomain(m), nil
+	return disciplineFromDomain(d), nil
 }

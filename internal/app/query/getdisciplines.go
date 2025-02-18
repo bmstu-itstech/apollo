@@ -31,13 +31,9 @@ func NewGetDisciplinesHandler(
 }
 
 func (h getDisciplinesHandler) Handle(ctx context.Context, query GetDisciplines) ([]Discipline, error) {
-	mat, err := h.storage.Disciplines()
+	discs, err := h.storage.Disciplines()
 	if err != nil {
 		return nil, err
 	}
-	mats_fd := make([]Discipline, 0)
-	for _, m := range mat {
-		mats_fd = append(mats_fd, disciplineFromDomain(m))
-	}
-	return mats_fd, nil
+	return disciplinesFromDomain(discs), nil
 }
