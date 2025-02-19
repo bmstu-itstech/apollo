@@ -1,12 +1,15 @@
 package mock
 
 import (
+	"sync"
+
 	"github.com/bmstu-itstech/apollo/internal/domain/material"
 )
 
 // MockStorage is an implementation of material.Storage using maps,
 // intended for basic testing.
 type MockStorage struct {
+	sync.RWMutex
 	materials   map[string]material.Material
 	departments map[int]material.Department
 	disciplines map[int]material.Discipline
@@ -14,13 +17,15 @@ type MockStorage struct {
 
 func NewMockStorage() *MockStorage {
 	return &MockStorage{
-		make(map[string]material.Material),
-		make(map[int]material.Department),
-		make(map[int]material.Discipline),
+		materials:   make(map[string]material.Material),
+		departments: make(map[int]material.Department),
+		disciplines: make(map[int]material.Discipline),
 	}
 }
 
 func (s *MockStorage) Materials(disciplineId int) ([]material.Material, error) {
+	s.RLock()
+	defer s.RUnlock()
 	materials := make([]material.Material, 0, len(s.materials))
 	for _, m := range s.materials {
 		if m.DisciplineId == disciplineId {
@@ -31,6 +36,8 @@ func (s *MockStorage) Materials(disciplineId int) ([]material.Material, error) {
 }
 
 func (s *MockStorage) Material(uuid string) (material.Material, error) {
+	s.RLock()
+	defer s.RUnlock()
 	m, ok := s.materials[uuid]
 	if !ok {
 		return material.Material{}, material.ErrMatNotExist
@@ -39,6 +46,8 @@ func (s *MockStorage) Material(uuid string) (material.Material, error) {
 }
 
 func (s *MockStorage) Upsert(uuid string, material material.Material) error {
+	s.Lock()
+	defer s.Unlock()
 	m, ok := s.materials[uuid]
 	if ok {
 		material.Views = m.Views
@@ -49,6 +58,8 @@ func (s *MockStorage) Upsert(uuid string, material material.Material) error {
 }
 
 func (s *MockStorage) Disciplines() ([]material.Discipline, error) {
+	s.RLock()
+	defer s.RUnlock()
 	disciplines := make([]material.Discipline, 0, len(s.disciplines))
 	for _, d := range s.disciplines {
 		disciplines = append(disciplines, d)
@@ -57,6 +68,8 @@ func (s *MockStorage) Disciplines() ([]material.Discipline, error) {
 }
 
 func (s *MockStorage) Discipline(id int) (material.Discipline, error) {
+	s.RLock()
+	defer s.RUnlock()
 	d, ok := s.disciplines[id]
 	if !ok {
 		return material.Discipline{}, material.ErrDiscNotExist
@@ -65,6 +78,8 @@ func (s *MockStorage) Discipline(id int) (material.Discipline, error) {
 }
 
 func (s *MockStorage) Departments() ([]material.Department, error) {
+	s.RLock()
+	defer s.RUnlock()
 	departments := make([]material.Department, 0, len(s.departments))
 	for _, d := range s.departments {
 		departments = append(departments, d)
@@ -73,6 +88,8 @@ func (s *MockStorage) Departments() ([]material.Department, error) {
 }
 
 func (s *MockStorage) Department(id int) (material.Department, error) {
+	s.RLock()
+	defer s.RUnlock()
 	d, ok := s.departments[id]
 	if !ok {
 		return material.Department{}, material.ErrDeptNotExist
@@ -81,8 +98,12 @@ func (s *MockStorage) Department(id int) (material.Department, error) {
 }
 
 func (s *MockStorage) AddDepartment(department material.Department) {
+	s.Lock()
+	defer s.Unlock()
 	s.departments[department.Id] = department
 }
 func (s *MockStorage) AddDiscipline(discipline material.Discipline) {
+	s.Lock()
+	defer s.Unlock()
 	s.disciplines[discipline.Id] = discipline
 }
