@@ -1,9 +1,7 @@
 package service
 
 import (
-	"context"
 	"log/slog"
-	"os"
 
 	"github.com/bmstu-itstech/apollo/internal/app"
 	"github.com/bmstu-itstech/apollo/internal/app/command"
@@ -11,8 +9,6 @@ import (
 	"github.com/bmstu-itstech/apollo/internal/common/logs"
 	"github.com/bmstu-itstech/apollo/internal/domain/material"
 	mock_infra "github.com/bmstu-itstech/apollo/internal/infra/mock"
-	"github.com/bmstu-itstech/apollo/internal/infra/postgres"
-	"github.com/jackc/pgx/v5"
 )
 
 type Cleanup func()
@@ -20,15 +16,16 @@ type Cleanup func()
 func NewApplication() (*app.Application, Cleanup) {
 	logger := logs.DefaultLogger()
 
-	url := os.Getenv("DATABASE_URI")
-	conn, err := pgx.Connect(context.Background(), url)
-	if err != nil {
-		panic(err)
-	}
-	store := postgres.NewPgStorage(conn)
+	// url := os.Getenv("DATABASE_URI")
+	// conn, err := pgx.Connect(context.Background(), url)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// store := postgres.NewPgStorage(conn)
+	store := mock_infra.NewMockStorage()
 
 	return newApplication(logger, store), func() {
-		_ = conn.Close(context.Background())
+		// _ = conn.Close(context.Background())
 	}
 }
 
