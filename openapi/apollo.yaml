@@ -107,6 +107,10 @@ paths:
       responses:
         "200":
           description: "The material has been successfully found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Material"
         "400":
           description: "Some data in the request is invalid"
           content:
@@ -139,6 +143,10 @@ paths:
       responses:
         "200":
           description: "Disciplines have been successfully obtained."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Disciplines"
         "400":
           description: "Some data in the request is invalid"
           content:
@@ -161,7 +169,7 @@ paths:
   /disciplines/{id}:
     get:
       operationId: getDiscipline
-      description: "Get discipline by its ID"
+      description: "Get a discipline by its ID"
       parameters:
       - in: path
         name: id
@@ -173,6 +181,10 @@ paths:
       responses:
         "200":
           description: "The discipline have been successfully obtained."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Discipline"
         "400":
           description: "Some data in the request is invalid"
           content:
@@ -198,13 +210,17 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /departaments:
+  /departments:
     get:
-      operationId: getDepartaments
-      description: "Get all departaments"
+      operationId: getDepartments
+      description: "Get all departments"
       responses:
         "200":
-          description: "Departaments have been successfully obtained."
+          description: "Departments have been successfully obtained."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Departments"
         "400":
           description: "Some data in the request is invalid"
           content:
@@ -224,21 +240,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /departaments/{id}:
+  /departments/{id}:
     get:
-      operationId: getDepartament
-      description: "Get departament by its ID"
+      operationId: getDepartment
+      description: "Get a department by its ID"
       parameters:
       - in: path
         name: id
-        description: "Departament ID"
+        description: "Department ID"
         schema:
           type: integer
           example: 123
         required: true
       responses:
         "200":
-          description: "The departament have been successfully obtained."
+          description: "The department have been successfully obtained."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
         "400":
           description: "Some data in the request is invalid"
           content:
@@ -258,7 +278,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
         "404":
-          description: "Departament by the ID not found"
+          description: "Department by the ID not found"
           content:
             application/json:
               schema:
@@ -303,7 +323,7 @@ components:
           type: integer
           description: "Number of GET requests for the material"
           example: 1234
-        departament_id:
+        department_id:
           type: integer
           description:
             "ID of the department that teaches the discipline the material belongs to.
@@ -323,7 +343,7 @@ components:
         - name
         - url
         - views
-        - departament_id
+        - department_id
         - discipline_id
         - created_at
 
@@ -359,7 +379,7 @@ components:
           type: string
           description: "Telegram is the username of the author if is not anonymous"
           example: "@username"
-        departament_id:
+        department_id:
           type: integer
           description:
             "ID of the department that teaches the discipline the material belongs to.
@@ -373,13 +393,12 @@ components:
         - uuid
         - name
         - url
-        - views
-        - departament_id
+        - department_id
         - discipline_id
 
-    Departament: 
+    Department: 
       type: object
-      description: "Description of the departament"
+      description: "Description of the department"
       properties:
         id:
           type: integer
@@ -387,16 +406,21 @@ components:
           example: 12
         code:
           type: string
-          description: "Short name of the departament"
+          description: "Short name of the department"
           example: "ИУ13"
         name:
           type: string
-          description: "Full name of the departament"
+          description: "Full name of the department"
           example: "Прикладная барсукология и пчеловодство"
       required:
         - id
         - code
         - name
+
+    Departments:
+      type: array
+      items:
+        $ref: "#/components/schemas/Department"
 
     Discipline:
       type: object
@@ -410,6 +434,9 @@ components:
           type: string
           description: "Full name of the discipline"
           example: "Основы барсукологии"
+      required:
+        - id
+        - name
 
     Disciplines:
       type: array

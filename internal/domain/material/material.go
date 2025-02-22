@@ -7,7 +7,7 @@ import (
 )
 
 type Material struct {
-	Uuid         string
+	UUID         string
 	Name         string
 	Desc         string
 	Url          string
@@ -21,16 +21,16 @@ type Material struct {
 var uuid_regex *regexp.Regexp = regexp.MustCompile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
 
 func UnmarshalMaterial(uuid, name, description, url string, author *string,
-	views, department_id, discipline_id int, created_at time.Time) (Material, error) {
+	views, departmentId, disciplineId int, createdAt time.Time) (Material, error) {
 	if !uuid_regex.Match([]byte(uuid)) {
 		return Material{}, errors.New("expected valid uuid")
 	} else if name == "" {
 		return Material{}, errors.New("expected non-empty name")
 	} else if url == "" {
 		return Material{}, errors.New("expected non-empty url")
-	} else if department_id < 0 {
+	} else if departmentId < 0 {
 		return Material{}, errors.New("expected non-negative department id")
-	} else if discipline_id < 0 {
+	} else if disciplineId < 0 {
 		return Material{}, errors.New("expected non-negative discipline id")
 	} else if views < 0 {
 		return Material{}, errors.New("expected non-negative views")
@@ -39,25 +39,25 @@ func UnmarshalMaterial(uuid, name, description, url string, author *string,
 	}
 
 	return Material{
-		Uuid:         uuid,
+		UUID:         uuid,
 		Name:         name,
 		Desc:         description,
 		Url:          url,
 		Author:       author,
 		Views:        views,
-		DepartmentId: department_id,
-		DisciplineId: discipline_id,
-		Created:      created_at,
+		DepartmentId: departmentId,
+		DisciplineId: disciplineId,
+		Created:      createdAt,
 	}, nil
 }
 
 // NewMaterial creates a Material with default views and time
-func NewMaterial(uuid, name, desc, url string, author *string, department, discipline int) (Material, error) {
-	return UnmarshalMaterial(uuid, name, desc, url, author, 0, department, discipline, time.Now())
+func NewMaterial(uuid, name, desc, url string, author *string, departmentId, disciplineId int) (Material, error) {
+	return UnmarshalMaterial(uuid, name, desc, url, author, 0, departmentId, disciplineId, time.Now())
 }
 
-func MustNewMaterial(uuid, name, desc, url string, author *string, department, discipline int) Material {
-	m, err := NewMaterial(uuid, name, desc, url, author, department, discipline)
+func MustNewMaterial(uuid, name, desc, url string, author *string, departmentId, disciplineId int) Material {
+	m, err := NewMaterial(uuid, name, desc, url, author, departmentId, disciplineId)
 	if err != nil {
 		panic(err)
 	}
